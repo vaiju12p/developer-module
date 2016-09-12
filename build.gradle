@@ -1,0 +1,87 @@
+//DEVELOPER
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: "org.sonarqube"
+apply plugin: 'jacoco'
+
+sourceCompatibility = 1.8
+
+repositories {
+    jcenter()
+     maven {url = 'http://conjars.org/repo/'}
+}
+
+repositories {
+    mavenCentral()
+}
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.palantir:jacoco-coverage:0.4.0'
+    }
+}
+
+jacoco {
+    toolVersion = "0.7.6.201602180812"
+    reportsDir = file("$buildDir/customJacocoReportDir")
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled false
+        csv.enabled false
+        html.destination "${buildDir}/jacocoHtml"
+    }
+}
+
+test {
+    jacoco {
+        append = false
+        destinationFile = file("$buildDir/jacoco/jacocoTest.exec")
+        classDumpFile = file("$buildDir/jacoco/classpathdumps")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'com.palantir.jacoco-coverage'
+
+jacocoCoverage {
+   
+}
+
+sonarqube {
+    properties {
+        property "sonar.host.url", "http://10.130.241.86:9000/"
+        property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
+        property "sonar.jdbc.username", "admin"
+        property "sonar.jdbc.password", "admin"
+    }
+}
+
+buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+  dependencies {
+    classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.0.1"
+  }
+}
+
+
+dependencies {
+   
+    testCompile 'junit:junit:4.12'
+    
+    //DEPENDENCIES FOR CASCADING: local
+    compile group: 'cascading', name: 'cascading-local', version: '3.0.3'
+    compile group: 'cascading', name: 'cascading-hadoop', version: '3.0.3'
+    compile group: 'com.hotels', name: 'plunger', version: '3.0.2'
+    compile group: 'cascading', name: 'cascading-hadoop2-mr1', version: '3.0.3'
+    compile group: 'commons-io', name: 'commons-io', version: '2.4'
+}
