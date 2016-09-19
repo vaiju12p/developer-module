@@ -35,7 +35,7 @@ public class CascAssn2_FilterRecords {
 class filterToCompareTranAmtNChargOffAmt extends BaseOperation implements Filter {
 
     public filterToCompareTranAmtNChargOffAmt() {
-        super(4, Fields.ALL);
+      
     }
 
     @Override
