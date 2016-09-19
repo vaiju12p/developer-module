@@ -19,4 +19,5 @@ import cascading.tuple.Fields;
 import cascading.tuple.Tuple;
 public class CascAssn1_MaxAmount_TestCase {
 
+
 }
