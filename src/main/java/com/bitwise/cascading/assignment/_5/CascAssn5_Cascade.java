@@ -19,19 +19,14 @@ import cascading.tuple.Fields;
 import cascading.tuple.TupleEntry;
 public class CascAssn5_Cascade {
     public Pipe acctountBalanceLess500(Pipe Input_Pipe){
-
-
-
-        return Input_Pipe;
-
+                Pipe less = new Each(Input_Pipe, new Not(new balanceAmountCompare()));
+        return less;
     }
 
     public Pipe acctountBalanceMore500(Pipe Input_Pipe){
 
-
-
-        return Input_Pipe;
-
+        Pipe more = new Each(Input_Pipe,new balanceAmountCompare());
+        return more;
     }
 
 
@@ -47,8 +42,9 @@ class balanceAmountCompare extends BaseOperation implements Filter
 
     public boolean isRemove( FlowProcess flowProcess, FilterCall call )
     {
+        TupleEntry arguments = call.getArguments();
 
-        return true;
+        return arguments.getLong("Account_Balance") >= 500;
     }
 
 

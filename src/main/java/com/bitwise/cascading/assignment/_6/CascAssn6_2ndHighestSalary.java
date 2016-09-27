@@ -8,12 +8,9 @@ import cascading.flow.FlowConnector;
 import cascading.flow.FlowDef;
 import cascading.flow.FlowProcess;
 import cascading.flow.local.LocalFlowConnector;
-import cascading.operation.BaseOperation;
-import cascading.operation.Filter;
-import cascading.operation.FilterCall;
-import cascading.operation.Function;
-import cascading.operation.FunctionCall;
+import cascading.operation.*;
 import cascading.pipe.Each;
+import cascading.pipe.Every;
 import cascading.pipe.GroupBy;
 import cascading.pipe.Pipe;
 import cascading.scheme.local.TextDelimited;
@@ -25,8 +22,9 @@ import cascading.tuple.TupleEntry;
 
 public class CascAssn6_2ndHighestSalary {
     public Pipe salary2ndHighest(Pipe Input_Pipe){
-
-        return  Input_Pipe;
+        Pipe tails = new GroupBy(Input_Pipe,Fields.UNKNOWN);
+        tails=new Every(tails, new SecondMaxValue(new Fields("TransAmt")));
+        return  tails;
 
     }
 
@@ -37,18 +35,49 @@ public class CascAssn6_2ndHighestSalary {
 
 }
 
-class CountFunction extends BaseOperation implements Function {
-
-    @Override
-    public void operate(FlowProcess flowProcess, FunctionCall functionCall) {
-
-
+class SecondMaxValue  extends BaseOperation<SecondMaxValue.Context>  implements Aggregator<SecondMaxValue.Context>
+{
+    public static class Context
+    {
+        long first=0,second=0;
+        Tuple t1=new  Tuple();
+        Tuple t2=new  Tuple();
     }
-}
 
-class TwoFilter extends BaseOperation implements Filter {
+    private Fields fields;
 
-    public boolean isRemove(FlowProcess flowProcess, FilterCall filterCall) {
-        return true;
+    public SecondMaxValue(Fields fields) {
+        this.fields=fields;
+    }
+
+    public void start( FlowProcess flowProcess,
+                       AggregatorCall<Context> aggregatorCall )
+    {
+        aggregatorCall.setContext( new Context() );
+    }
+
+    public void aggregate( FlowProcess flowProcess,
+                           AggregatorCall<Context> aggregatorCall )
+    {
+        TupleEntry arguments = aggregatorCall.getArguments();
+        Context context = aggregatorCall.getContext();
+        long value=arguments.getInteger((Comparable)fields.toString().replace("'", ""));
+        if(context.first<value){
+            context.second=context.first;
+            context.first=value;
+            context.t2=new Tuple(context.t1);
+            context.t1=new Tuple(arguments.getTuple());
+        }else if(context.second<value){
+            context.second=value;
+            context.t2=new Tuple(arguments.getTuple());
+        }
+    }
+
+    public void complete( FlowProcess flowProcess,
+                          AggregatorCall<Context> aggregatorCall )
+    {
+        Context context = aggregatorCall.getContext();
+        context.t2.add("2");
+        aggregatorCall.getOutputCollector().add(context.t2);	;
     }
 }

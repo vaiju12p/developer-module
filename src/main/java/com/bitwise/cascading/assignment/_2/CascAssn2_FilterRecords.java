@@ -21,9 +21,9 @@ import cascading.tuple.TupleEntry;
 
 public class CascAssn2_FilterRecords {
     public Pipe filterTranTypeCNP(Pipe transactions_Input_Pipe) {
-
-
-        return transactions_Input_Pipe;
+        Pipe CSV_Input_Pipe = new Pipe("inputPipe", transactions_Input_Pipe);
+        CSV_Input_Pipe = new Each(CSV_Input_Pipe, Fields.ALL, new filterToCompareTranAmtNChargOffAmt(new Fields("Transaction_Type"),".*CNP.*"));
+        return CSV_Input_Pipe;
     }
 
     public static void main(String[] args) throws IOException {
@@ -34,14 +34,17 @@ public class CascAssn2_FilterRecords {
 
 class filterToCompareTranAmtNChargOffAmt extends BaseOperation implements Filter {
 
-    public filterToCompareTranAmtNChargOffAmt() {
-      
+    private final Fields onFilterFields;
+    private String regex;
+    public filterToCompareTranAmtNChargOffAmt(Fields onFilterFields,String regex) {
+        this.onFilterFields=onFilterFields;
+        this.regex=regex;
     }
 
     @Override
     public boolean isRemove(FlowProcess flowProcess, FilterCall filterCall) {
 
-
-        return (true);
+        TupleEntry arguments = filterCall.getArguments();
+        return (arguments.getString((Comparable)onFilterFields.toString().replace("'", "")).matches(regex));
     }
 }

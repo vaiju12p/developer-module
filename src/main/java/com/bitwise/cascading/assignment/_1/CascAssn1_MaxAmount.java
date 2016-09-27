@@ -21,7 +21,10 @@ public class CascAssn1_MaxAmount {
 
 
     public Pipe tranWithMaxAmount(Pipe transactions_Input_Pipe) {
-        return transactions_Input_Pipe;
+        Pipe processingPipe = new Pipe("inputPipe",transactions_Input_Pipe);
+        processingPipe = new GroupBy(processingPipe,new Fields("Account_Number"),new Fields("Account_Number"));
+        processingPipe = new Every(processingPipe,new Fields("Transaction_Amount"),new MaxValue(),Fields.ALL);
+        return processingPipe;
     }
 
     public static void main(String[] args) throws IOException {
