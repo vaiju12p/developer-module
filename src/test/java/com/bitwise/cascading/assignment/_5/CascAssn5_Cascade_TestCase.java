@@ -62,57 +62,5 @@ public class CascAssn5_Cascade_TestCase {
         assertEquals(tupleEntries1.get(0).getString("Name"),  "Vijay");
     }
 
-    CascAssn5_Cascade CascAssn5_Cascade_Obj = new CascAssn5_Cascade();
 
-    Plunger plunger = new Plunger();
-
-    Data tran_details_CSV_Data = null;
-    Pipe tran_details_Pipe_CSV = null;
-
-    @Before
-    public void runFirst(){
-        tran_details_CSV_Data = new DataBuilder(new Fields("Account_Number","Name","Date_Of_Birth","Phone_Number","City","Account_Balance"))
-                .addTuple("1001","Mahesh K Ranu","10/10/1982","1234567891","Pune","700")
-                .addTuple("1002","Mahesh K Ranu","10/10/1982","1234567891","Pune","550")
-                .addTuple("1003","Mahesh K Ranu","10/10/1982","1234567891","Pune","400")
-                .addTuple("1004","Mahesh K Ranu","10/10/1982","1234567891","Pune","300")
-                .addTuple("1005","Mahesh K Ranu","10/10/1982","1234567891","Pune","800")
-                .build();
-    }
-
-    @Test
-    public void acctountBalanceLess500Test() {
-        tran_details_Pipe_CSV = plunger.newNamedPipe("tran_details_Pipe_CSV", tran_details_CSV_Data);
-        Pipe OUT_tran_details_Pipe_CSV = CascAssn5_Cascade_Obj.acctountBalanceLess500(tran_details_Pipe_CSV);
-
-        Bucket bucket = plunger.newBucket(new Fields("Account_Number","Name","Date_Of_Birth","Phone_Number","City","Account_Balance"), OUT_tran_details_Pipe_CSV);
-        List<Tuple> actual = bucket.result().asTupleList();
-
-        assertEquals(actual.size(),2);
-
-        assertEquals(actual.get(0).getString(0),"1003");
-        assertEquals(actual.get(0).getString(1),"Mahesh K Ranu");
-        assertEquals(actual.get(0).getString(2),"10/10/1982");
-        assertEquals(actual.get(0).getString(3),"1234567891");
-        assertEquals(actual.get(0).getString(4),"Pune");
-        assertEquals(actual.get(0).getString(5),"400");
-    }
-
-    @Test
-    public void acctountBalanceMore500Test() {
-        tran_details_Pipe_CSV = plunger.newNamedPipe("tran_details_Pipe_CSV", tran_details_CSV_Data);
-        Pipe OUT_tran_details_Pipe_CSV = CascAssn5_Cascade_Obj.acctountBalanceMore500(tran_details_Pipe_CSV);
-
-        Bucket bucket = plunger.newBucket(new Fields("Account_Number","Name","Date_Of_Birth","Phone_Number","City","Account_Balance"), OUT_tran_details_Pipe_CSV);
-        List<Tuple> actual = bucket.result().asTupleList();
-
-        assertEquals(actual.size(),3);
-
-        assertEquals(actual.get(0).getString(0),"1001");
-        assertEquals(actual.get(0).getString(1),"Mahesh K Ranu");
-        assertEquals(actual.get(0).getString(2),"10/10/1982");
-        assertEquals(actual.get(0).getString(3),"1234567891");
-        assertEquals(actual.get(0).getString(4),"Pune");
-        assertEquals(actual.get(0).getString(5),"700");
-    }
 }
