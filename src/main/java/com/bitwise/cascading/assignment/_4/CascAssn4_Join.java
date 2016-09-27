@@ -14,8 +14,7 @@ import cascading.tuple.Fields;
 public class CascAssn4_Join {
     public Pipe joinFiles(Pipe  customer_data_Pipe, Pipe transaction_data_Pipe){
 
-        Fields out_data_Clmns = new Fields("Account_Number","Name","Transaction_Amount");
-        Pipe  HashJoin_data_Pipe = new CoGroup(customer_data_Pipe,new Fields("Account_Number1"),transaction_data_Pipe,new Fields("Account_Number"),new InnerJoin());
+        Pipe  HashJoin_data_Pipe = new CoGroup(customer_data_Pipe,new Fields("Account_Number"),transaction_data_Pipe,new Fields("Account_Number1"),new InnerJoin());
         return HashJoin_data_Pipe;
     }
     public static void main(String[] args) {

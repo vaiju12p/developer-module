@@ -44,7 +44,7 @@ class balanceAmountCompare extends BaseOperation implements Filter
     {
         TupleEntry arguments = call.getArguments();
 
-        return arguments.getLong("Account_Balance") >= 500;
+        return arguments.getLong("Account_Balance") <= 500;
     }
 
 
