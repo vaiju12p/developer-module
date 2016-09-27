@@ -42,7 +42,7 @@ public class CascAssn4_Join_TestCase {
 
         CascAssn4_Join cascAssn4_join=new CascAssn4_Join();
 
-        Bucket bucket = plunger.newBucket(new Fields("Account_Number","Name","Transaction_Amount"),cascAssn4_join.joinFiles(inPipe1,inPipe2));
+        Bucket bucket = plunger.newBucket(new Fields("Account_Number1","Name","Account_Number","Transaction_Amount"),cascAssn4_join.joinFiles(inPipe1,inPipe2));
 
         List<TupleEntry> tupleEntries = bucket.result().asTupleEntryList();
         assertEquals(tupleEntries.get(0).getString("Name"),  "Vaijnath");
