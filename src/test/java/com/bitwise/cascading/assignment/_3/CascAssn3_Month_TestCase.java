@@ -27,16 +27,15 @@ public class CascAssn3_Month_TestCase {
     public void itShouldReturnaTheMonthNameForDate() {
     Plunger plunger=new Plunger();
     Data corpus = new com.hotels.plunger.DataBuilder(new Fields("Account_Number","Name","Date_Of_Birth","Phone_Number","City","Account_Balance"))
-            .addTuple(12,23,20160505,"sdf",10,30)
-            .addTuple(12,23,20170606,"asasdf",10,30)
-            .addTuple(12,23,20180707,"asdfsafd",10,30)
-            .addTuple(12,23,20190808,"asdfasdfsd",10,30)
+            .addTuple(12,23,"05/05/2016","sdf",10,30)
+            .addTuple(12,23,"06/06/2017","asasdf",10,30)
             .build();
     Pipe inPipe=plunger.newNamedPipe("InPipe", corpus);
     CascAssn3_Month cascAssn3_month=new CascAssn3_Month();
 
     Bucket bucket = plunger.newBucket(new Fields("Account_Number","Name","Date_Of_Birth","Phone_Number","City","Account_Balance","month") ,cascAssn3_month.extract_month(inPipe));
     List<TupleEntry> tupleEntries = bucket.result().asTupleEntryList();
+        System.out.println(tupleEntries.get(0).getString("month"));
     assertEquals(tupleEntries.get(0).getString("month"),  "May");
 }
 

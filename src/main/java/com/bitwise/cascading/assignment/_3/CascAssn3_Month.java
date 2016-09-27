@@ -66,8 +66,7 @@ class date_to_month extends BaseOperation implements Function{
     }
 
     private void extractMonth(TupleEntry arguments, Tuple result) throws ParseException {
-        DateFormat date= new SimpleDateFormat("yyyyMMdd");
-
+        DateFormat date= new SimpleDateFormat("dd/MM/yyyy");
         Date d=date.parse(arguments.getString( filterFields ));
         Calendar calendar=Calendar.getInstance();
         calendar.setTime(d);
